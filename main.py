@@ -488,7 +488,7 @@ def choose_type_repeat(message):
 def choose_type_repeat(message):
     try:
         duration = int(message.text)
-        MASTER_EVENT['duration'] = duration*60
+        MASTER_EVENT['duration'] = duration*60000
         markup = utils.generate_markup_agree()
         bot.send_message(message.chat.id, 'Добавить такое-то событие?', reply_markup=markup)
         update_state(message, CONFIRMATION)
