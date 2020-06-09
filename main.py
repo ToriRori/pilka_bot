@@ -1,6 +1,4 @@
 import random
-import time
-import config
 import telebot
 from telebot import apihelper, types
 from collections import defaultdict
