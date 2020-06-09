@@ -1,4 +1,6 @@
 import random
+import time
+import config
 import telebot
 from telebot import apihelper, types
 from collections import defaultdict
@@ -59,7 +61,7 @@ def get_schedule(message):
 def get_schedule(message):
     markup = utils.generate_markup_to_get_schedule()
     bot.send_message(message.chat.id, 'Выбери сервис', reply_markup=markup)
-    if message.from_user.username == os.environ['ADMIN']:
+    if message.from_user.username == os.environ["ADMIN"]:
         update_state(message, GETMASTER)
     else:
         update_state(message, GETCLIENT)
@@ -506,7 +508,7 @@ def choose_type_repeat(message):
         if MASTER_EVENT['byweekday'] != "":
             rrule += "BYWEEKDAY=" + MASTER_EVENT['byweekday'] + ";"
         json = {'username': message.from_user.username, "duration": MASTER_EVENT['duration'],
-                "rrule": rrule, "dateStart": MASTER_EVENT['date_start']}
+                "rrule": rrule, "dateStart": MASTER_EVENT['date_start']*1000}
         response = requests.post('https://pilka.herokuapp.com/rest/event/create', json=json)
         print(response)
         if response.status_code == 200:
