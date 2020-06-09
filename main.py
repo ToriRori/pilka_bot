@@ -1,6 +1,4 @@
 import random
-import time
-import config
 import telebot
 from telebot import apihelper, types
 from collections import defaultdict
@@ -8,6 +6,7 @@ import utils
 import json
 import requests
 import datetime, time
+import os
 
 apihelper.proxy = {
     'https': 'socks5://104.248.63.18:30588'
@@ -16,7 +15,7 @@ apihelper.proxy = {
 START, REPEAT, REPEAT_TYPE, REPEAT_DURATION, DATE, DURATION, CONFIRMATION, GETMASTER, GETCLIENT, DELETECLIENT, DELETEMASTER, EVENTRESERVE, SHOWRESERVED, SHOWAPPLICATIONS, APPROVEAPPLICATIONS = range(
     15)
 
-bot = telebot.TeleBot(config.token, threaded=False)
+bot = telebot.TeleBot(os.environ["TOKEN"], threaded=False)
 
 USER_STATE = defaultdict(lambda: START)
 
@@ -41,9 +40,8 @@ def update_event(message, state):
 @bot.message_handler(commands=['start'])
 def get_schedule(message):
     # Формируем разметку
-    if message.from_user.username == config.admin:
+    if message.from_user.username == os.environ["ADMIN"]:
         role = 'MASTER'
-        config.chat = message.chat.id
     else:
         role = 'USER'
     response = requests.post('https://pilka.herokuapp.com/authorization',
@@ -61,7 +59,7 @@ def get_schedule(message):
 def get_schedule(message):
     markup = utils.generate_markup_to_get_schedule()
     bot.send_message(message.chat.id, 'Выбери сервис', reply_markup=markup)
-    if message.from_user.username == config.admin:
+    if message.from_user.username == os.environ['ADMIN']:
         update_state(message, GETMASTER)
     else:
         update_state(message, GETCLIENT)
@@ -85,7 +83,7 @@ def choose_type_repeat(message):
                                 minute=59,
                                 second=59)
         json_req = {"dateStart": time.mktime(start.timetuple()), "dateEnd": time.mktime(end.timetuple()),
-                    "masterUsername": config.admin}
+                    "masterUsername": os.environ["ADMIN"]}
 
     if message.text == 'Расписание на завтра':
         keyboard_hider = types.ReplyKeyboardRemove()
@@ -103,7 +101,7 @@ def choose_type_repeat(message):
                                 minute=59,
                                 second=59)
         json_req = {"dateStart": time.mktime(start.timetuple()), "dateEnd": time.mktime(end.timetuple()),
-                    "masterUsername":  config.admin}
+                    "masterUsername":  os.environ["ADMIN"]}
 
     if message.text == 'Расписание на неделю':
         keyboard_hider = types.ReplyKeyboardRemove()
@@ -122,7 +120,7 @@ def choose_type_repeat(message):
                                 minute=59,
                                 second=59)
         json_req = {"dateStart": time.mktime(start.timetuple()), "dateEnd": time.mktime(end.timetuple()),
-                    "masterUsername":  config.admin}
+                    "masterUsername":  os.environ["ADMIN"]}
 
     if message.text == 'Расписание на месяц':
         keyboard_hider = types.ReplyKeyboardRemove()
@@ -141,7 +139,7 @@ def choose_type_repeat(message):
                                 minute=59,
                                 second=59)
         json_req = {"dateStart": time.mktime(start.timetuple()), "dateEnd": time.mktime(end.timetuple()),
-                    "masterUsername":  config.admin}
+                    "masterUsername":  os.environ["ADMIN"]}
     response = requests.post('https://pilka.herokuapp.com/rest/event/free', json=json_req)
     print(response.text)
     if len(response.text) <= 2:
@@ -281,7 +279,7 @@ def choose_type_repeat(message):
         response = requests.put('https://pilka.herokuapp.com/rest/event/engage', json={"eventId": get_event(message), "clientUsername": message.from_user.username})
         if response.status_code == 200:
             bot.send_message(message.chat.id, 'Сеанс успешно забронирован', reply_markup=keyboard_hider)
-            bot.send_message(config.chat, "У вас новая заявка!")
+            bot.send_message(os.environ["CHAT"], "У вас новая заявка!")
         else:
             bot.send_message(message.chat.id, 'Произошла ошибка при бронировании сеанса', reply_markup=keyboard_hider)
         # отправить уведомление мастеру
@@ -325,7 +323,7 @@ def choose_type_repeat(message):
 # show reserved events
 @bot.message_handler(commands=['show_reserved'])
 def get_schedule(message):
-    if message.from_user.username == config.admin:
+    if message.from_user.username == os.environ["ADMIN"]:
         bot.send_message(message.chat.id, "Вам недоступно это действие")
         return
     response = requests.get('https://pilka.herokuapp.com/rest/event/get/clientEvents', params={"clientUsername": message.from_user.username})
@@ -362,11 +360,11 @@ def callback_inline(call):
 # show events applications
 @bot.message_handler(commands=['show_applications'])
 def get_schedule(message):
-    if message.from_user.username != config.admin:
+    if message.from_user.username != os.environ["ADMIN"]:
         bot.send_message(message.chat.id, "Вам недоступно это действие")
         return
     response = requests.get('https://pilka.herokuapp.com/rest/event/get/review',
-                            params={"masterUsername": config.admin})
+                            params={"masterUsername": os.environ["ADMIN"]})
     print(response.text)
     if len(response.text) <= 2:
         bot.send_message(message.chat.id, "Заявок не найдено")
@@ -412,7 +410,7 @@ def choose_type_repeat(message):
 def get_schedule(message):
     print('put_schedule')
     markup = utils.generate_markup_to_put_schedule()
-    if message.from_user.username == config.admin:
+    if message.from_user.username == os.environ["ADMIN"]:
         bot.send_message(message.chat.id, 'Выбери сервис', reply_markup=markup)
         MASTER_EVENT['mul'] = 1
         MASTER_EVENT['interval'] = 1
