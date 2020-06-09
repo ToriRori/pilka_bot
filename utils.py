@@ -4,7 +4,7 @@ from random import shuffle
 from telebot import types
 
 from SQLighter import SQLighter
-from config import shelve_name, database_name
+#from config import shelve_name, database_name
 
 # def count_rows():
 #     db = SQLighter(database_name)
@@ -19,13 +19,13 @@ from config import shelve_name, database_name
 #     return rowsnum
 
 
-def get_answer_for_user(chat_id):
-    with shelve.open(shelve_name) as storage:
-        try:
-            answer = storage[str(chat_id)]
-            return answer
-        except KeyError:
-            return None
+#def get_answer_for_user(chat_id):
+#    with shelve.open(shelve_name) as storage:
+#        try:
+#            answer = storage[str(chat_id)]
+#            return answer
+#        except KeyError:
+#            return None
 
 def generate_markup_to_get_schedule():
     list_items = ['Расписание на сегодня', 'Расписание на завтра', 'Расписание на неделю', 'Расписание на месяц']
@@ -40,7 +40,7 @@ def generate_markup_to_get_type_of_repeat():
     return generate_markup(list_items)
 
 def generate_markup_to_get_duration_of_repeat():
-    list_items = ['Неделю', 'До конца месяца', 'Месяц']
+    list_items = ['Неделю', 'Месяц']
     return generate_markup(list_items)
 
 def generate_markup_agree():
