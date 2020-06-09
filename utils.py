@@ -1,9 +1,5 @@
-import shelve
-from random import shuffle
-
 from telebot import types
 
-from SQLighter import SQLighter
 #from config import shelve_name, database_name
 
 # def count_rows():
