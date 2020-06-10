@@ -32,7 +32,7 @@ def generate_markup_to_put_schedule():
     return generate_markup(list_items)
 
 def generate_markup_to_get_type_of_repeat():
-    list_items = ['Каждый день (без выходных)', 'Каждый день (с выходными сб, вс)', 'Каждую неделю']
+    list_items = ['Каждый день (с выходными сб, вс)', 'Каждую неделю']
     return generate_markup(list_items)
 
 def generate_markup_to_get_duration_of_repeat():
