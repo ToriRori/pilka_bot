@@ -1,5 +1,6 @@
 import logging
 import random
+import codecs
 import os
 import telebot
 from telebot import apihelper, types
@@ -165,6 +166,14 @@ def get_schedule(message):
                          " - " + date_end.strftime('%H:%M'), callback_data=item['id'])
             keyboard.add(callback_button)
         bot.send_message(message.chat.id, "Ваши заявки", reply_markup=keyboard)
+
+@bot.message_handler(commands=['info'])
+def get_schedule(message):
+    f = codecs.open("readme.md", encoding='utf-8')
+    text = f.readlines()
+    for i in range(0, 5):
+        text[i] = ""
+    bot.send_message(message.chat.id, "".join(text))
 
 @bot.callback_query_handler(func=lambda call: get_state(call.message) == SHOWAPPLICATIONS)
 def callback_inline(call):
