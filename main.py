@@ -89,9 +89,9 @@ def get_schedule(message):
 def get_schedule(message):
     logging.info(str(message.chat.id)+":get_schedule")
     update_state(message, START)
-    markup = utils.generate_markup_to_put_schedule()
     id = message.chat.id
     if id == os.environ["CHAT"]:
+        markup = utils.generate_markup_to_put_schedule()
         MASTER_EVENT['mul'] = 1
         MASTER_EVENT['interval'] = 1
         MASTER_EVENT['freq'] = 'DAILY'
@@ -100,7 +100,7 @@ def get_schedule(message):
         update_state(message, REPEAT)
         bot.send_message(message.chat.id, 'Выбери сервис', reply_markup=markup)
     else:
-        bot.send_message(message.chat.id, 'Вам не разрешено данное действие', reply_markup=markup)
+        bot.send_message(message.chat.id, 'Вам не разрешено данное действие')
 
 
 ####################################################
