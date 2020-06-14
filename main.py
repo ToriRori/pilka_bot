@@ -1,6 +1,5 @@
 import random
 import codecs
-import config
 import telebot
 from telebot import apihelper, types
 from collections import defaultdict
