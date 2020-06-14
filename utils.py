@@ -28,7 +28,7 @@ def generate_markup_to_get_schedule():
     return generate_markup(list_items)
 
 def generate_markup_to_put_schedule():
-    list_items = ['Одиночное окно', 'Повторяющееся окно']
+    list_items = ['Одиночное окно', 'Повторяющееся окно', 'Отмена']
     return generate_markup(list_items)
 
 def generate_markup_to_get_type_of_repeat():
@@ -37,6 +37,10 @@ def generate_markup_to_get_type_of_repeat():
 
 def generate_markup_to_get_duration_of_repeat():
     list_items = ['Неделю', 'Месяц']
+    return generate_markup(list_items)
+
+def generate_markup_delete_or_engage():
+    list_items = ['Удалить', 'Записать клиента', 'Отмена']
     return generate_markup(list_items)
 
 def generate_markup_agree():
