@@ -114,7 +114,7 @@ def get_schedule(message):
     if user_id == os.environ["CHAT"]:
         bot.send_message(message.chat.id, "Вам недоступно это действие")
         return
-    response = requests.get('https://pilka.herokuapp.com/rest/event/get/clientEvents', params={"clientTelegramId": id})
+    response = requests.get('https://pilka.herokuapp.com/rest/event/get/clientEvents', params={"clientTelegramId": user_id})
     if response.status_code != 200:
         logging.error(str(message.chat.id) + ":no id")
         bot.send_message(message.chat.id, "Не удалось выполнить действие")
