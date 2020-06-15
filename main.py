@@ -47,12 +47,12 @@ def update_event(message, state):
 def get_schedule(message):
     logging.info(str(message.chat.id)+":start")
     update_state(message, START)
-    user_id = message.chat.id
+    user_id = str(message.chat.id)
     if user_id == os.environ["CHAT"]:
         role = 'MASTER'
     else:
         role = 'USER'
-    logging.info(str(user_id) + ":role:"+role+"master_id:"+os.environ["CHAT"])
+    logging.info(user_id + ":role:"+role+" master_id:"+os.environ["CHAT"])
     username = ""
     if message.from_user.first_name:
         username = message.from_user.first_name
@@ -76,7 +76,7 @@ def get_schedule(message):
     logging.info(str(message.chat.id)+":get_schedule")
     update_state(message, START)
     markup = utils.generate_markup_to_get_schedule()
-    user_id = message.chat.id
+    user_id = str(message.chat.id)
     if user_id == os.environ["CHAT"]:
         update_state(message, GETMASTER)
     else:
@@ -90,7 +90,7 @@ def get_schedule(message):
 def get_schedule(message):
     logging.info(str(message.chat.id)+":get_schedule")
     update_state(message, START)
-    user_id = message.chat.id
+    user_id = str(message.chat.id)
     if user_id == os.environ["CHAT"]:
         markup = utils.generate_markup_to_put_schedule()
         MASTER_EVENT['mul'] = 1
@@ -110,7 +110,7 @@ def get_schedule(message):
 def get_schedule(message):
     logging.info(str(message.chat.id)+":show_reserved")
     update_state(message, START)
-    user_id = message.chat.id
+    user_id = str(message.chat.id)
     if user_id == os.environ["CHAT"]:
         bot.send_message(message.chat.id, "Вам недоступно это действие")
         return
@@ -171,7 +171,7 @@ def callback_inline(call):
 def get_schedule(message):
     logging.info(str(message.chat.id) + ":show_applications")
     update_state(message, START)
-    user_id = message.chat.id
+    user_id = str(message.chat.id)
     if user_id != os.environ["CHAT"]:
         bot.send_message(message.chat.id, "Вам недоступно это действие")
         return
