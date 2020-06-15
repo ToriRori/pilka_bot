@@ -52,7 +52,7 @@ def get_schedule(message):
         role = 'MASTER'
     else:
         role = 'USER'
-    logging.info(str(message.chat.id) + ":role:"+role)
+    logging.info(str(user_id) + ":role:"+role+"master_id:"+os.environ["CHAT"])
     username = ""
     if message.from_user.first_name:
         username = message.from_user.first_name
