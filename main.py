@@ -47,11 +47,12 @@ def update_event(message, state):
 def get_schedule(message):
     logging.info(str(message.chat.id)+":start")
     update_state(message, START)
-    id = message.chat.id
-    if id == os.environ["CHAT"]:
+    user_id = message.chat.id
+    if user_id == os.environ["CHAT"]:
         role = 'MASTER'
     else:
         role = 'USER'
+    logging.info(str(message.chat.id) + ":role:"+role)
     username = ""
     if message.from_user.first_name:
         username = message.from_user.first_name
@@ -59,8 +60,8 @@ def get_schedule(message):
             username += " " + message.from_user.last_name
     response = requests.post('https://pilka.herokuapp.com/authorization',
                              json={'username': username,
-                                   'phoneNumber': "", 'telegramId': id, 'role': role})
-    if (response.status_code == 200):
+                                   'phoneNumber': "", 'telegramId': user_id, 'role': role})
+    if response.status_code == 200:
         logging.info(str(message.chat.id) + ":new user success")
         bot.send_message(message.chat.id, 'Добро пожаловать в бот!')
     else:
@@ -75,8 +76,8 @@ def get_schedule(message):
     logging.info(str(message.chat.id)+":get_schedule")
     update_state(message, START)
     markup = utils.generate_markup_to_get_schedule()
-    id = message.chat.id
-    if id == os.environ["CHAT"]:
+    user_id = message.chat.id
+    if user_id == os.environ["CHAT"]:
         update_state(message, GETMASTER)
     else:
         update_state(message, GETCLIENT)
@@ -89,8 +90,8 @@ def get_schedule(message):
 def get_schedule(message):
     logging.info(str(message.chat.id)+":get_schedule")
     update_state(message, START)
-    id = message.chat.id
-    if id == os.environ["CHAT"]:
+    user_id = message.chat.id
+    if user_id == os.environ["CHAT"]:
         markup = utils.generate_markup_to_put_schedule()
         MASTER_EVENT['mul'] = 1
         MASTER_EVENT['interval'] = 1
@@ -109,12 +110,12 @@ def get_schedule(message):
 def get_schedule(message):
     logging.info(str(message.chat.id)+":show_reserved")
     update_state(message, START)
-    id = message.chat.id
-    if id == os.environ["CHAT"]:
+    user_id = message.chat.id
+    if user_id == os.environ["CHAT"]:
         bot.send_message(message.chat.id, "Вам недоступно это действие")
         return
     response = requests.get('https://pilka.herokuapp.com/rest/event/get/clientEvents', params={"clientTelegramId": id})
-    if (response.status_code != 200):
+    if response.status_code != 200:
         logging.error(str(message.chat.id) + ":no id")
         bot.send_message(message.chat.id, "Не удалось выполнить действие")
         return
@@ -148,7 +149,7 @@ def callback_inline(call):
     markup = utils.generate_markup_agree()
     response = requests.get('https://pilka.herokuapp.com/rest/event/get',
                             params={"eventId": call.data})
-    if (response.status_code != 200):
+    if response.status_code != 200:
         logging.error(str(call.message.chat.id) + ":no id")
         bot.send_message(call.message.chat.id, "Не удалось выполнить действие")
         return
@@ -170,13 +171,13 @@ def callback_inline(call):
 def get_schedule(message):
     logging.info(str(message.chat.id) + ":show_applications")
     update_state(message, START)
-    id = message.chat.id
-    if id != os.environ["CHAT"]:
+    user_id = message.chat.id
+    if user_id != os.environ["CHAT"]:
         bot.send_message(message.chat.id, "Вам недоступно это действие")
         return
     response = requests.get('https://pilka.herokuapp.com/rest/event/get/review',
                             params={"masterTelegramId": os.environ["CHAT"]})
-    if (response.status_code != 200):
+    if response.status_code != 200:
         logging.error(str(message.chat.id) + ":no id")
         bot.send_message(message.chat.id, "Не удалось выполнить действие")
         return
@@ -216,7 +217,7 @@ def callback_inline(call):
 
     response = requests.get('https://pilka.herokuapp.com/rest/event/get',
                             params={"eventId": call.data})
-    if (response.status_code != 200):
+    if response.status_code != 200:
         update_state(call.message, START)
         logging.error(str(call.message.chat.id) + ":no id")
         bot.send_message(call.message.chat.id, "Не удалось выполнить действие")
@@ -238,7 +239,7 @@ def choose_type_repeat(message):
     logging.info(str(message.chat.id) + ":approve")
     response = requests.get('https://pilka.herokuapp.com/rest/event/get',
                             params={"eventId": get_event(message)})
-    if (response.status_code != 200):
+    if response.status_code != 200:
         logging.error(str(message.chat.id) + ":no id")
         bot.send_message(message.chat.id, "Не удалось выполнить действие")
         return
